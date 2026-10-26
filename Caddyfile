@@ -1,0 +1,50 @@
+:80 {
+    root * /var/www/website/zgx_daye/www.daye.hk/www.daye.hk
+
+    route {
+        # alicdn 图标字体（本地副本）
+        route /at.alicdn.com/* {
+            root * /var/www/website/zgx_daye/www.daye.hk
+            file_server
+        }
+
+        # 百度统计 JS（本地副本）
+        route /hm.baidu.com/* {
+            root * /var/www/website/zgx_daye/www.daye.hk
+            file_server
+        }
+
+        # 主站点
+        route /* {
+            file_server {
+                index index.html
+            }
+        }
+    }
+
+    encode gzip zstd
+
+    header {
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+
+    @static-assets {
+        path *.css *.js *.woff *.woff2 *.png *.jpg *.gif *.svg *.ico
+    }
+    header @static-assets Cache-Control "public, max-age=604800"
+
+    @html-files {
+        path *.html
+    }
+    header @html-files Cache-Control "no-cache"
+
+    log {
+        output file /var/log/caddy/daye-access.log {
+            roll_size 100mb
+            roll_keep 10
+        }
+        format json
+    }
+}
