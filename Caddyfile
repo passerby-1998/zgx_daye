@@ -16,6 +16,13 @@
 
         # 主站点
         route /* {
+            # 无后缀 URL → 自动补 .html（如 /index.php/page/index/name/about → about.html）
+            @tryHtml {
+                not file
+                file {path}.html
+            }
+            rewrite @tryHtml {path}.html
+
             file_server {
                 index index.html
             }
